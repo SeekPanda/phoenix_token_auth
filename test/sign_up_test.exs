@@ -11,7 +11,7 @@ defmodule SignUpTest do
 
   @email "user@example.com"
   @password "secret"
-  @headers [{"Content-Type", "application/json"}]
+  @headers [{"content-type", "application/json"}, {"language", "en"}]
 
   setup do
     on_exit fn ->
@@ -36,12 +36,12 @@ defmodule SignUpTest do
       assert Keyword.fetch!(mail, :to) == @email
       assert Keyword.fetch!(mail, :subject) == "Hello " <> @email
       assert Keyword.fetch!(mail, :from) == "myapp@example.com"
-      assert Keyword.fetch!(mail, :text) == "the_emails_body"
+      assert Keyword.fetch!(mail, :text) == "the_emails_body with language en"
     end
   end
 
   test "sign up with missing email" do
-    conn = call(TestRouter, :post, "/api/users", %{user: %{password: @password}}, @headers)
+    conn = call(TestRouter, :post, "/api/users", %{"user" => %{"password" => @password}}, @headers)
     assert conn.status == 422
 
     errors = Poison.decode!(conn.resp_body)
