@@ -16,14 +16,14 @@ defmodule PhoenixTokenAuth.Controllers.Sessions do
   """
   def create(conn, %{"username" => username, "password" => password}) do
     case Authenticator.authenticate_by_username(username, password) do
-      {:ok, user} -> json conn, %{access_token: Authenticator.generate_token_for(user), token_type: "bearer", id: user.id}
+      {:ok, user} -> json conn, %{access_token: Authenticator.generate_token_for(user), token_type: "bearer", id: user.id, cademon_accessible: user.cademon_accessible}
       {:error, errors} -> Util.send_error(conn, errors, 401)
     end
   end
 
   def create(conn, %{"email" => email, "password" => password}) do
     case Authenticator.authenticate_by_email(email, password) do
-      {:ok, user} -> json conn, %{token: Authenticator.generate_token_for(user)}
+      {:ok, user} -> json conn, %{token: Authenticator.generate_token_for(user), cademon_accessible: user.cademon_accessible}
       {:error, errors} -> Util.send_error(conn, errors, 401)
     end
   end
